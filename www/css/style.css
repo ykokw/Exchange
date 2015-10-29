@@ -1,0 +1,191 @@
+/* itemlist */
+
+.list-item-container {
+  line-height: 1;
+  padding: 15px 0px 15px 15px;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.title {
+  font-weight: 500;
+  line-height: 16px;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.owner {
+  font-size: 14px;
+  opacity: 0.4;
+  margin-bottom: 6px;
+}
+
+.desc {
+  line-height: 1.2;
+  font-size: 13px;
+}
+
+.photo-container {
+    width:-moz-fit-content;
+    width:-webkit-fit-content;
+    width:fit-content;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:15px;
+}
+
+/* additem */
+
+.to-wrapper {
+  line-height: 1;
+  height: 62px;
+  padding: 10px;
+}
+
+.to-image {
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.to-name {
+  font-weight: 500;
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+
+.to-email {
+  font-size: 14px;
+  opacity: 0.4;
+}
+
+.text-input {
+  margin-top: 4px;
+}
+
+.textarea {
+  margin-top: 4px;
+}
+
+/* userlist */
+
+.tab-icon {
+  font-size: 22px;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-label {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.person-list {
+  border-top: none;
+}
+
+.person {
+  line-height: 1;
+}
+
+.person-list-header {
+  opacity: 0.6;
+}
+
+.person-name {
+  line-height: 44px;
+}
+
+.person-image {
+  width: 30px;
+  height: 30px;
+  margin-top: 8px;
+  border-radius: 2px;
+}
+
+/* userdetail */
+
+.profile-card {
+  width: 100%;
+  text-align: center;
+  color: white;
+  padding: 15px 0;
+  line-height: 1.4;
+  background-color: #33393c;
+  text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 0px;
+}
+
+.profile-image {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  background-color: black;
+  border 1px solid white;
+  box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+  -webkit-box-shadow:rgba(0, 0, 0, 0.2) 0px 2px 0px 0px;
+}
+
+.profile-name {
+  margin: 10px 0 0 0;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.info-col {
+  height: 60px;
+  line-height: 1;
+  padding: 12px 0 12px 4px;
+}
+
+/* settings */
+
+.settings-header {
+  font-weight: 500;
+  font-size: 14px;
+  opacity: 0.4;
+  padding: 10px 0 0px 10px;
+  margin-bottom: -4px;
+}
+
+/* searchbar */
+
+.search-input {
+  width: 96%;
+  margin: 6px auto 6px auto;
+}
+
+/* status */
+
+.status {
+  margin-left: 15px;
+}
+
+/* inset-useritemlist*/
+
+.inset-useritemlist {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* index-button */
+
+.index-button {
+  color: #fff;
+  background-color: #4cda64;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* add-button */
+
+.add-button {
+  padding: 10px 10px;
+}

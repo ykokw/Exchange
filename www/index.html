@@ -1,0 +1,557 @@
+<!DOCTYPE HTML>
+<html ng-app="exchangeApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="components/loader.js"></script>
+    <script src="js/ncmb-latest.min.js"></script>
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+
+<body>
+    <ons-navigator title="Navigator" var="myNavigator">
+        <ons-page ng-controller="PortalController">
+            <ons-toolbar>
+                <div class="center">ホームページ</div>
+            </ons-toolbar>
+            
+            <div style="text-align: center">
+                <h1>中古品交換</h1>
+                <p>ユーザー名</p>
+                <p>
+                    <input class="text-input" type="text" ng-model="userNameLogin" />
+                </p>
+                <p>パスワード</p>
+                <p>
+                    <input class="text-input" type="password" ng-model="passwordLogin" />
+                </p>
+                <ons-button modifier="light" class="index-button" ng-click="login(userNameLogin, passwordLogin);">ログイン</ons-button>
+                <br/>
+                <ons-button modifier="light" class="index-button" ng-click="myNavigator.pushPage('register.html');">新規会員作成</ons-button>
+            </div>
+        </ons-page>
+    </ons-navigator>
+    
+    <ons-template id="register.html">
+        <ons-page ng-controller="RegisterController">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>戻る</ons-back-button>
+                </div>
+                <div class="center">新会員作成</div>
+            </ons-toolbar>
+            
+            <div style="text-align: center">
+                <h1>会員登録</h1>
+                <p>ユーザー名</p>
+                <p>
+                    <input class="text-input" type="text" ng-model="userNameSignUp" />
+                </p>
+                <p>パスワード</p>
+                <p>
+                    <input class="text-input" type="password" ng-model="passwordSignUp" />
+                </p>
+                <p>パスワード再入力</p>
+                <p>
+                    <input class="text-input" type="password" ng-model="passwordSignUpRetype" />
+                </p>
+                <ons-button modifier="light" class="index-button" ng-click="register(userNameSignUp, passwordSignUp, passwordSignUpRetype);">登録する</ons-button>
+            </div>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="mainPage.html">
+        <ons-page ng-controller="MainPageController">
+            <ons-tabbar var="tabbar">
+                <ons-tabbar-item page="itemList.html" label="Item List" icon="ion-home" active="true"></ons-tabbar-item>
+                <ons-tabbar-item page="userList.html" label="User List" icon="ion-ios-person"></ons-tabbar-item>
+                <ons-tabbar-item page="myList.html" label="My List" icon="ion-ios-pricetag"></ons-tabbar-item>
+                <ons-tabbar-item page="settings.html" label="Settings" icon="ion-ios-cog"></ons-tabbar-item>
+            </ons-tabbar>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="itemList.html">
+        <ons-page ng-controller="ItemListController">
+            <ons-toolbar>
+                <div class="center">中古品リスト</div>
+            </ons-toolbar>
+            
+            <div class="navigation-bar">
+                <div class="navigation-bar__center">
+                    <input type="search" class="search-input" placeholder="中古品名" ng-model="itemTitleSearch" ng-change="ItemSearch(itemTitleSearch);">
+                </div>
+            </div>
+            
+            <div ng-if="itemTitleSearch != ''">
+                <ons-list-header class="person-list-header">検索結果</ons-list-header>
+                <div ng-if="searchedItemList.length == 0">
+                    <ons-list>
+                        <ons-list-item>
+                            <p>なし</p>
+                        </ons-list-item>
+                    </ons-list>
+                </div>
+                <ons-list>    
+                    <ons-list-item modifier="chevron" class="list-item-container" ng-repeat="searchedItem in searchedItemList" ng-click="showSearchedItemDetail($index);">
+                        <ons-row>
+                            <ons-col width="95px">
+                                <img ng-src="{{searchedItem.photo}}" class="thumbnail"/>
+                            </ons-col>
+                            <ons-col>
+                                <div class="title">
+                                    {{searchedItem.itemTitle}}
+                                </div>
+                                <div class="owner">
+                                    {{searchedItem.owner}}
+                                </div>
+                                <div class="desc">
+                                    {{searchedItem.itemDesc}}
+                                </div>
+                            </ons-col>
+                            <ons-col width="40px"></ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            
+            <div ng-if="itemTitleSearch == ''">
+                <ons-list-header class="person-list-header">最新中古品</ons-list-header>
+                <ons-list>    
+                    <ons-list-item modifier="chevron" class="list-item-container" ng-repeat="newItem in newItemList" ng-click="showNewItemDetail($index);">
+                        <ons-row>
+                            <ons-col width="95px">
+                                <img ng-src="{{newItem.photo}}" class="thumbnail"/>
+                            </ons-col>
+                            <ons-col>
+                                <div class="title">
+                                    {{newItem.itemTitle}}
+                                </div>
+                                <div class="owner">
+                                    {{newItem.owner}}
+                                </div>
+                                <div class="desc">
+                                    {{newItem.itemDesc}}
+                                </div>
+                            </ons-col>
+                            <ons-col width="40px"></ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="userList.html">
+        <ons-page ng-controller="UserListController">
+            <ons-toolbar>
+                <div class="center">ユーザーリスト</div>
+            </ons-toolbar>
+            <div class="navigation-bar">
+                <div class="navigation-bar__center">
+                    <input type="search" class="search-input" placeholder="ユーザー名" ng-model="userNameSearch" ng-change="UserSearch(userNameSearch)">
+                </div>
+            </div>
+            
+            <ons-list class="person-list">
+                <div ng-if="userNameSearch != ''">
+                    <ons-list-header class="person-list-header">検索結果</ons-list-header>
+                    <div ng-if="searchedUserList.length == 0">
+                        <ons-list-item class="person">
+                            <ons-row>
+                                <ons-col class="person-name">
+                                    <p>なし</p>
+                                </ons-col>
+                            </ons-row>
+                        </ons-list-item>
+                    </div>
+                    <ons-list-item class="person" modifier="tappable" ng-repeat="searchedUser in searchedUserList" ng-click="showSearchedUserDetail($index);">
+                        <ons-row>
+                            <ons-col width="40px">
+                                <img src="image/test.png" class="person-image">
+                            </ons-col>
+                            <ons-col class="person-name">
+                                {{searchedUser.userName}}
+                            </ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </div>
+                
+                <div ng-if="userNameSearch == ''">    
+                    <ons-list-header class="person-list-header">最新会員</ons-list-header>
+                    <ons-list-item class="person" modifier="tappable" ng-repeat="newUser in newUserList" ng-click="showNewUserDetail($index);">
+                        <ons-row>
+                            <ons-col width="40px">
+                                <img src="image/test.png" class="person-image">
+                            </ons-col>
+                            <ons-col class="person-name">
+                                {{newUser.userName}}
+                            </ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                    <ons-list-header class="person-list-header">お気に入り</ons-list-header>
+                    <ons-list-item class="person" modifier="tappable" ng-repeat="favorUser in myFavoriteUserList" ng-click="showFavorUserDetail($index);">
+                        <ons-row>
+                            <ons-col width="40px">
+                                <img src="image/test.png" class="person-image">
+                            </ons-col>
+                            <ons-col class="person-name">
+                                {{favorUser.userName}}
+                            </ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </div>
+            </ons-list>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="myList.html">
+        <ons-page id="myList" ng-controller="MyListController">
+            <ons-toolbar>
+                <div class="center">
+                    <div ng-if="myListNavi == '1'">自分の中古品リスト</div>
+                    <div ng-if="myListNavi == '2'">自分の予約リスト</div>
+                </div>
+                <div ng-if="myListNavi == '1'" class="right">
+                    <ons-toolbar-button>
+                        <ons-icon icon="ion-plus" fixed-width="false" style="vertical-align: -4px;" onclick="myNavigator.pushPage('addItem.html');"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            
+            <div class="navigation-bar">
+                <div class="navigation-bar__center">
+                    <div class="button-bar" style="width:200px; margin:8px auto 0;">
+                        <div class="button-bar__item">
+                            <input type="radio" ng-model="myListNavi" name="navi-segment" value="1">
+                            <div class="button-bar__button">中古品</div>
+                        </div>
+                        <div class="button-bar__item">
+                            <input type="radio" ng-model="myListNavi" name="navi-segment" value="2">
+                            <div class="button-bar__button">予約</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div ng-if="myListNavi == '1'">
+                <ons-list modifier="inset" class="inset-useritemlist">
+                    <div ng-if="myItemList.length == 0">
+                        <p class="status">なし</p>
+                    </div>
+                    <ons-list-item modifier="chevron" class="list-item-container" ng-repeat="myItem in myItemList" ng-click="showMyItemDetail($index);">
+                        <ons-row>
+                            <ons-col width="95px">
+                                <img ng-src="{{myItem.photo}}" class="thumbnail"/>
+                            </ons-col>
+                            <ons-col>
+                                <div class="title">
+                                    {{myItem.itemTitle}}
+                                </div>
+                                <div class="owner">
+                                    {{myItem.owner}}
+                                </div>
+                                <div class="desc">
+                                    {{myItem.itemDesc}}
+                                </div>
+                            </ons-col>
+                            <ons-col width="40px"></ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+            
+            <div ng-if="myListNavi == '2'">
+                <ons-list modifier="inset" class="inset-useritemlist">
+                    <div ng-if="requests.length == 0">
+                        <p class="status">なし</p>
+                    </div>
+                    <ons-list-item modifier="chevron" class="list-item-container" ng-repeat="request in requests" ng-click="showMyRequestDetail($index);">
+                        <ons-row>
+                            <ons-col>
+                                <div class="title">
+                                    予約された方 ： {{request.toOwner}}
+                                </div>
+                                <div class="owner">
+                                    予約者 ： {{request.fromOwner}}
+                                </div>
+                                <div class="desc">
+                                    更新時間 ： {{request.updateDate}}
+                                </div>
+                            </ons-col>
+                            <ons-col width="40px"></ons-col>
+                        </ons-row>
+                    </ons-list-item>
+                </ons-list>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <ons-template id="settings.html">
+        <ons-page ng-controller="SettingController">
+            <ons-toolbar>
+                <div class="center">設定</div>
+            </ons-toolbar>
+            
+            <div class="add-button">
+                <ons-button modifier="large" style="margin: 0 auto; background-color: #eb482f;" ng-click="logout();">ログアウト</ons-button>
+            </div>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="itemDetail.html">
+        <ons-page ng-controller="ItemDetailController">
+            <ons-toolbar class="item">
+                <div class="left"><ons-back-button>戻る</ons-back-button></div>
+                <div class="center">中古品情報</div>
+            </ons-toolbar>
+            <ons-list modifier="inset" style="margin-top: 10px">
+                <ons-list-item>
+                    <ons-row>
+                        <ons-col>
+                            <div style="margin-top: 25px; margin-left: 80px">
+                                <img ng-src="{{selectedItem.photo}}" />
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                    <ons-row>
+                        <ons-col>
+                            <div style="margin-left: 8px">
+                                <p>中古品名 : {{selectedItem.itemTitle}}</p>
+                                <p>持ち主 : {{selectedItem.owner}}</p>
+                                <p>説明 : {{selectedItem.itemDesc}}</p>
+                            </div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                
+                <div ng-if="selectedItem.owner != currentUserName">
+                    <ons-list-item modifier="chevron" ng-click="myNavigator.pushPage('addRequest.html');">
+                        <p><ons-icon icon="ion-chatboxes" fixed-width="true" style="color: #ccc"></ons-icon>その中古品を予約する</p>
+                    </ons-list-item>
+                </div>
+            </ons-list>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="userDetail.html">
+        <ons-page ng-controller="UserDetailController">
+            <ons-toolbar>
+                <div class="left"><ons-back-button>戻る</ons-back-button></div>
+                <div class="center">ユーザー情報</div>
+            </ons-toolbar>
+            <div class="profile-card">
+                <img src="image/test.png" class="profile-image">
+                <div class="profile-name">{{selectedUser.userName}}</div>
+            </div>
+            <ons-list ng-if="selectedUser.userName != currentUserName">
+                <ons-list-item>
+                    <div ng-if="selectedUser.isFavor != 1">
+                        <ons-button style="margin-top: 2px; margin-bottom: 2px" modifier="large--quiet" ng-click="addFavorite();">お気に入りに登録してみよう！</ons-button>
+                    </div>
+                    <div ng-if="selectedUser.isFavor == 1">
+                        <ons-button style="margin-top: 2px; margin-bottom: 2px" modifier="large--cta" ng-click="deleteFavorite();">お気に入りに登録しました！</ons-button>
+                    </div>
+                </ons-list-item>
+            </ons-list>
+            <div class="settings-header">{{selectedUser.userName}}の中古品リスト</div>
+            <ons-list modifier="inset" class="inset-useritemlist">
+                <div ng-if="isLoading == 1">
+                    <p class="status">読み込み中</p>
+                </div>
+                <div ng-if="userItemList.length == 0 && isLoading != 1">
+                    <p class="status">なし</p>
+                </div>
+                <ons-list-item modifier="chevron" class="list-item-container" ng-repeat="userItem in userItemList" ng-click="showUserItemDetail($index);">
+                    <ons-row>
+                        <ons-col width="95px">
+                            <img ng-src="{{userItem.photo}}" class="thumbnail"/>
+                        </ons-col>
+                        <ons-col>
+                            <div class="title">
+                                {{userItem.itemTitle}}
+                            </div>
+                            <div class="owner">
+                                {{userItem.owner}}
+                            </div>
+                            <div class="desc">
+                                {{userItem.itemDesc}}
+                            </div>
+                        </ons-col>
+                        <ons-col width="40px"></ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="requestDetail.html">
+        <ons-page ng-controller="RequestDetailController">
+            <ons-toolbar class="item">
+                <div class="left"><ons-back-button>戻る</ons-back-button></div>
+                <div class="center">予約情報</div>
+            </ons-toolbar>
+            
+            <div class="settings-header">
+                <p ng-if="selectedRequest.toOwnerStatus == 1" style="color: blue; font-weight: bold;">予約された方：同意承諾</p>
+                <p ng-if="selectedRequest.toOwnerStatus == 0" style="color: blue; font-weight: bold;">予約された方：まだ決めてない</p>
+                <p ng-if="selectedRequest.toOwnerStatus == -1" style="color: blue; font-weight: bold;">予約された方：断る</p>
+                {{selectedRequest.toOwner}}の中古品リスト
+            </div>
+            <ons-list modifier="inset" class="inset-useritemlist">
+                <ons-list-item class="list-item-container">
+                    <ons-row>
+                        <ons-col width="95px">
+                            <img ng-src="{{selectedRequest.toItem.photo}}" class="thumbnail"/>
+                        </ons-col>
+                        <ons-col>
+                            <div class="title">
+                                {{selectedRequest.toItem.itemTitle}}
+                            </div>
+                            <div class="owner">
+                                {{selectedRequest.toItem.owner}}
+                            </div>
+                            <div class="desc">
+                                {{selectedRequest.toItem.itemDesc}}
+                            </div>
+                        </ons-col>
+                        <ons-col width="40px"></ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+            
+            <div class="settings-header">
+                <p style="color: red; font-weight: bold;">予約者：予約中</p>
+                {{selectedRequest.fromOwner}}の中古品リスト
+            </div>
+            <ons-list modifier="inset" class="inset-useritemlist">
+                <ons-list-item class="list-item-container" ng-repeat="fromItem in selectedRequest.fromItemList">
+                    <ons-row>
+                        <ons-col width="95px">
+                            <img ng-src="{{fromItem.photo}}" class="thumbnail"/>
+                        </ons-col>
+                        <ons-col>
+                            <div class="title">
+                                {{fromItem.itemTitle}}
+                            </div>
+                            <div class="owner">
+                                {{fromItem.owner}}
+                            </div>
+                            <div class="desc">
+                                {{fromItem.itemDesc}}
+                            </div>
+                        </ons-col>
+                        <ons-col width="40px"></ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+            
+            <div ng-if="selectedRequest.toOwner == currentUserName && selectedRequest.toOwnerStatus == 0">
+                <div class="add-button">
+                    <ons-button modifier="large" style="margin: 0 auto; background-color: #4cda64;" ng-click="commitRequest()">承諾</ons-button>
+                </div>
+                <div class="add-button">
+                    <ons-button modifier="large" style="margin: 0 auto; background-color: #f28227;" ng-click="refuseRequest();">断る</ons-button>
+                </div>
+            </div>
+            
+            <div ng-if="selectedRequest.fromOwner == currentUserName && selectedRequest.toOwnerStatus == 0">
+                <div class="add-button">
+                    <ons-button modifier="large" style="margin: 0 auto; background-color: #eb482f;" ng-click="cancelRequest();">キャンセル</ons-button>
+                </div>
+            </div>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="addItem.html">
+        <ons-page ng-controller="AddItemController">
+            <ons-toolbar>
+                <div class="right">
+                    <ons-toolbar-button ng-click="cancelAddItem();">戻る</ons-toolbar-button>
+                </div>
+                <div class="center">中古品追加</div>
+            </ons-toolbar>
+            <ons-list modifier="inset" style="margin-top: 10px">
+                <ons-list-item class="to-wrapper">
+                    <ons-row>
+                        <ons-col width="52px">
+                            <img src="image/test.png" width="42" class="to-image">
+                        </ons-col>
+                        <ons-col>
+                            <div class="to-name">{{currentUserName}}</div>
+                            <div class="to-email">zhao.wenhao@stf.nifty.co.jp</div>
+                        </ons-col>
+                    </ons-row>
+                </ons-list-item>
+                <ons-list-item>
+                    <input type="text" class="text-input text-input--transparent" placeholder="中古品の名" style="width: 100%" ng-model="itemTitleAdd">
+                </ons-list-item>
+                <ons-list-item>
+                    <textarea class="textarea textarea--transparent" placeholder="中古品の説明" style="width: 100%; height: 100px;" ng-model="itemDescAdd"></textarea>
+                </ons-list-item>
+                <ons-list-item modifier="chevron" ng-click="takePhoto();">
+                    <ons-icon icon="fa fa-camera" style="opacity:0.2; size:20px"></ons-icon>
+                    <span>写真を撮る</span>
+                </ons-list-item>
+                <ons-list-item>
+                    <div class="photo-container"><img id="photoPreview" src="" width="120" height="150"></div>
+                </ons-list-item>
+            </ons-list>
+            <div class="add-button">
+                <ons-button modifier="large" style="margin: 0 auto;" ng-click="addNewItem();">保存</ons-button>
+            </div>
+        </ons-page>
+    </ons-template>
+    
+    <ons-template id="addRequest.html">
+        <ons-page ng-controller="AddRequestController">
+            <ons-toolbar>
+                <div class="left">
+                    <ons-back-button>戻る</ons-back-button>
+                </div>
+                <div class="center">予約追加</div>
+            </ons-toolbar>
+            
+            <div class="settings-header">{{selectedItem.owner}}の中古品リスト</div>
+            <ons-list modifier="inset" class="inset-useritemlist">
+                <ons-list-item class="list-item-container">
+                    <ons-row>
+                        <ons-col width="95px">
+                            <img ng-src="{{selectedItem.photo}}" class="thumbnail"/>
+                        </ons-col>
+                        <ons-col>
+                            <div class="title">
+                                {{selectedItem.itemTitle}}
+                            </div>
+                            <div class="owner">
+                                {{selectedItem.owner}}
+                            </div>
+                            <div class="desc">
+                                {{selectedItem.itemDesc}}
+                            </div>
+                        </ons-col>
+                        <ons-col width="40px"></ons-col>
+                    </ons-row>
+                </ons-list-item>
+            </ons-list>
+
+            <div class="settings-header">自分の中古品リスト</div>
+            <ons-list modifier="inset" class="inset-useritemlist" ng-repeat="myItem in myItemList">
+                <ons-list-item modifier="tappable">
+                    <label class="checkbox checkbox--list-item">
+                        <input type="checkbox" ng-model="myItem.isChecked">
+                        <div class="checkbox__checkmark checkbox--list-item__checkmark"></div>
+                        {{myItem.itemTitle}}
+                    </label>
+                </ons-list-item>
+            </ons-list>
+ 
+            <div class="add-button">
+                <ons-button modifier="large" style="margin: 0 auto;" ng-click="addRequest();">予約</ons-button>
+            </div>
+        </ons-page>
+    </ons-template>
+</body>
+</html>
